@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Recommendations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Base Twitch-like theme */
+        body {
+            background-color: #0e0e10; /* Dark blue-black background */
+            color: #f0f0f0; /* White text */
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        h1, h3 {
+            color: #1da1f2; /* Bright blue heading color */
+        }
+        .job-card {
+            background-color: #16181a; /* Dark gray-blue background */
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .job-card h5 {
+            color: #1da1f2; /* Bright blue */
+        }
+        .job-card p {
+            color: #d1d5db; /* Light gray */
+        }
+        .btn-primary {
+            background-color: #1da1f2; /* Bright blue */
+            border-color: #1da1f2;
+        }
+        .btn-primary:hover {
+            background-color: #1a91e3;
+        }
+        .form-control {
+            background-color: #202225; /* Dark input background */
+            color: #f0f0f0;
+            border: 1px solid #303336;
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #1da1f2; /* Blue focus border */
+        }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #818384; /* Muted text */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">SportioHub - Find Your Dream Job</h1>
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label for="skillLevel" class="form-label">Skill Level</label>
+                <select id="skillLevel" class="form-control">
+                    <option value="">Select Skill Level</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="preferredSport" class="form-label">Preferred Sport</label>
+                <select id="preferredSport" class="form-control">
+                    <option value="">Select Sport</option>
+                    <option value="Cricket">Cricket</option>
+                    <option value="Hockey">Hockey</option>
+                    <option value="Tennis">Tennis</option>
+                    <option value="Football">Football</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="locationPreference" class="form-label">Location</label>
+                <input type="text" id="locationPreference" class="form-control" placeholder="Enter Location">
+            </div>
+        </div>
+        <button id="findJobs" class="btn btn-primary w-100">Find Jobs</button>
+
+        <div class="mt-4">
+            <h3>Government Jobs</h3>
+            <div id="governmentJobs"></div>
+        </div>
+        <div class="mt-4">
+            <h3>Private Jobs</h3>
+            <div id="privateJobs"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Powered by AI Job Recommender © 2024</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#findJobs').on('click', function () {
+                const userInputs = {
+                    skillLevel: $('#skillLevel').val(),
+                    preferredSport: $('#preferredSport').val(),
+                    locationPreference: $('#locationPreference').val()
+                };
+    
+                if (!userInputs.skillLevel || !userInputs.preferredSport || !userInputs.locationPreference) {
+                    alert("Please fill in all fields before searching.");
+                    return;
+                }
+    
+                // Sample job data to simulate output
+                const sampleGovernmentJobs = [
+                    {
+                        title: `Sports Officer - ${userInputs.preferredSport}`,
+                        location: userInputs.locationPreference,
+                        sport: userInputs.preferredSport,
+                        skillLevel: userInputs.skillLevel,
+                        type: "Government"
+                    },
+                    {
+                        title: `Coach - ${userInputs.preferredSport}`,
+                        location: userInputs.locationPreference,
+                        sport: userInputs.preferredSport,
+                        skillLevel: userInputs.skillLevel,
+                        type: "Government"
+                    }
+                ];
+    
+                const samplePrivateJobs = [
+                    {
+                        title: `Sports Analyst - ${userInputs.preferredSport}`,
+                        location: userInputs.locationPreference,
+                        sport: userInputs.preferredSport,
+                        skillLevel: userInputs.skillLevel,
+                        type: "Private"
+                    },
+                    {
+                        title: `Event Organizer - ${userInputs.preferredSport} Tournaments`,
+                        location: userInputs.locationPreference,
+                        sport: userInputs.preferredSport,
+                        skillLevel: userInputs.skillLevel,
+                        type: "Private"
+                    }
+                ];
+    
+                // Populate government jobs
+                let govHTML = sampleGovernmentJobs.length ? '' : '<p>No government jobs found.</p>';
+                sampleGovernmentJobs.forEach(job => {
+                    govHTML += `
+                        <div class="job-card">
+                            <h5>${job.title}</h5>
+                            <p><strong>Location:</strong> ${job.location}</p>
+                            <p><strong>Sport:</strong> ${job.sport}</p>
+                            <p><strong>Skill Level:</strong> ${job.skillLevel}</p>
+                            <p><strong>Type:</strong> ${job.type}</p>
+                        </div>`;
+                });
+                $('#governmentJobs').html(govHTML);
+    
+                // Populate private jobs
+                let privHTML = samplePrivateJobs.length ? '' : '<p>No private jobs found.</p>';
+                samplePrivateJobs.forEach(job => {
+                    privHTML += `
+                        <div class="job-card">
+                            <h5>${job.title}</h5>
+                            <p><strong>Location:</strong> ${job.location}</p>
+                            <p><strong>Sport:</strong> ${job.sport}</p>
+                            <p><strong>Skill Level:</strong> ${job.skillLevel}</p>
+                            <p><strong>Type:</strong> ${job.type}</p>
+                        </div>`;
+                });
+                $('#privateJobs').html(privHTML);
+            });
+        });
+    </script>
+    
+</body>
+</html>

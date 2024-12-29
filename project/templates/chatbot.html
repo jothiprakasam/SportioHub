@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportio Hub Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex flex-col h-screen">
+    <!-- Navbar -->
+    <nav class="flex items-center justify-between bg-purple-700 p-4">
+        <div class="flex items-center space-x-4">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Sportio Hub Logo" class="h-10">
+            <span class="text-xl font-bold">Sportio Hub Chatbot</span>
+        </div>
+        <a href="/" class="hover:text-gray-300">Back to Home</a>
+    </nav>
+
+    <!-- Chat Area -->
+    <div class="flex-grow overflow-y-auto p-4 space-y-4" id="chatbox">
+        <!-- Chat messages dynamically rendered here -->
+    </div>
+
+    <!-- Input Area -->
+    <form id="chat-form" class="flex items-center p-4 bg-gray-800">
+        <input type="text" id="prompt" name="prompt" placeholder="Ask the chatbot..." class="flex-grow p-2 bg-gray-700 rounded-lg text-white">
+        <button type="submit" class="ml-4 px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700">Send</button>
+    </form>
+
+    <script>
+        const chatForm = document.getElementById('chat-form');
+        const chatBox = document.getElementById('chatbox');
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const prompt = document.getElementById('prompt').value;
+
+            if (prompt.trim() === '') return;
+
+            // Append user's message to chatbox
+            const userMessage = `<div class="text-right"><p class="bg-purple-600 p-2 rounded-lg inline-block">${prompt}</p></div>`;
+            chatBox.innerHTML += userMessage;
+
+            // Fetch response from backend
+            try {
+                const response = await fetch('/chatbot', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt }),
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    const errorMessage = `<div class="text-left"><p class="bg-red-600 p-2 rounded-lg inline-block">${data.error}</p></div>`;
+                    chatBox.innerHTML += errorMessage;
+                } else {
+                    const botMessage = `<div class="text-left"><p class="bg-gray-700 p-2 rounded-lg inline-block">${data.response}</p></div>`;
+                    chatBox.innerHTML += botMessage;
+                }
+            } catch (err) {
+                const errorMessage = `<div class="text-left"><p class="bg-red-600 p-2 rounded-lg inline-block">Error: Unable to fetch response</p></div>`;
+                chatBox.innerHTML += errorMessage;
+            }
+
+            // Clear the input field
+            document.getElementById('prompt').value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+</body>
+</html>

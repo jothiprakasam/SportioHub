@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainer Video Analysis</title>
+</head>
+<body>
+    <h1>Trainer Video Analysis</h1>
+    <form action="/trainer" method="POST" enctype="multipart/form-data">
+        <label for="default_video">Upload Default Shot Video:</label>
+        <input type="file" id="default_video" name="default_video" accept="video/*" required><br><br>
+        
+        <label for="user_video">Upload User Shot Video:</label>
+        <input type="file" id="user_video" name="user_video" accept="video/*" required><br><br>
+        
+        <button type="submit">Analyze Videos</button>
+    </form>
+    
+    {% if output_video %}
+    <h2>Comparison Output:</h2>
+    <video width="800" controls>
+        <source src="{{ url_for('static', filename='outputs/' + output_video) }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    {% endif %}
+</body>
+</html>

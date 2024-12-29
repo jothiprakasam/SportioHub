@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis History</title>
+</head>
+<body>
+    <h1>Pose Analysis History</h1>
+    <ul>
+        {% for result in results %}
+            <li>
+                <strong>Timestamp:</strong> {{ result['timestamp'] }} <br>
+                <strong>Similarity Score:</strong> {{ result['similarity_score'] }} <br>
+                <a href="{{ result['output_image_path'] }}">View Output Image</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

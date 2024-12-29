@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pose Analysis Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0e0e10;
+            color: #fff;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #1f1f23;
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #9147ff;
+            margin: 0;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container {
+            background-color: #1f1f23;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-container label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #9147ff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-container button:hover {
+            background-color: #772ce8;
+        }
+
+        .results {
+            background-color: #1f1f23;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .results img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #1f1f23;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        footer a {
+            color: #9147ff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Pose Analysis Tool</h1>
+    </header>
+    <main>
+        <div class="form-container">
+            <form action="/ai" method="post" enctype="multipart/form-data">
+                <label for="input_image">Input Image:</label>
+                <input type="file" id="input_image" name="input_image" accept="image/*" required>
+
+                <label for="validation_image">Validation Image:</label>
+                <input type="file" id="validation_image" name="validation_image" accept="image/*" required>
+
+                <button type="submit">Analyze</button>
+            </form>
+        </div>
+
+        {% if error %}
+        <div class="results" style="color: red;">
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+
+        {% if similarity_score %}
+        <div class="results">
+            <h2>Results</h2>
+            <p><strong>Similarity Score:</strong> {{ similarity_score }}</p>
+            <h3>Feedback:</h3>
+            <ul>
+                {% for suggestion in feedback %}
+                <li>{{ suggestion }}</li>
+                {% endfor %}
+            </ul>
+            <h3>Output Image:</h3>
+            <img src="{{ output_image }}" alt="Output Image">
+        </div>
+        {% endif %}
+    </main>
+    <footer>
+        <p>Powered by <a href="#">AI Pose Analysis</a> | Inspired by Twitch</p>
+    </footer>
+</body>
+</html>

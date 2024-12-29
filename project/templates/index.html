@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportio Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navbar -->
+    <nav class="flex items-center justify-between bg-purple-700 p-4">
+        <div class="flex items-center space-x-4">
+            <img src="{{ url_for('static', filename='images/sportioHub - Level up your Game (3).jpg') }}" alt="Sportio Hub Logo" class="h-10">
+            <span class="text-xl font-bold">Sportio Hub - Level Up Your Game</span>
+        </div>
+        <div class="flex space-x-6">
+            <a href="http://localhost:3000/" class="hover:text-gray-300">Chatbot</a>
+            <a href="/ai" class="hover:text-gray-300">AI Assistant</a>
+            <a href="/jobs" class="hover:text-gray-300">Career</a>
+        </div>
+    </nav>
+
+    <!-- Slideshow -->
+    <section class="relative w-full h-64 mt-4">
+        <div class="slideshow w-full h-full overflow-hidden relative">
+            <div class="flex w-full h-full animate-slide">
+                <img src="{{ url_for('static', filename='images/sport1.jpg') }}" alt="Sport Photo 1" class="w-full object-cover">
+                <img src="{{ url_for('static', filename='images/sport2.jpg') }}" alt="Sport Photo 2" class="w-full object-cover">
+                <img src="{{ url_for('static', filename='images/sport4.jpeg') }}" alt="Sport Photo 3" class="w-full object-cover">
+                <img src="{{ url_for('static', filename='images/sport4.jpeg') }}" alt="Sport Photo 4" class="w-full object-cover">
+                <img src="{{ url_for('static', filename='images/sport1.jpg') }}" alt="Sport Photo 1" class="w-full object-cover">
+                <img src="{{ url_for('static', filename='images/sport2.jpg') }}" alt="Sport Photo 2" class="w-full object-cover">
+                <img src="{{ url_for('static', filename='images/sport4.jpeg') }}" alt="Sport Photo 3" class="w-full object-cover">
+                <img src="{{ url_for('static', filename='images/sport-career.jpeg') }}" alt="Sport Photo 4" class="w-full object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Post Section -->
+    <section class="mt-6 px-4">
+        <div class="bg-gray-800 rounded-lg shadow-md p-4">
+            <h2 class="text-lg font-bold mb-4">Community Posts</h2>
+            <div id="postContainer" class="border-b border-gray-700 pb-4 mb-4">
+                <p class="text-gray-300">"Excited to announce a new training event this weekend!"</p>
+                <span class="text-sm text-gray-500">- User123</span>
+            </div>
+            <form id="postForm" class="flex flex-col space-y-2">
+                <textarea id="postContent" placeholder="Write your post here..." class="bg-gray-700 border border-gray-600 rounded-lg p-2 resize-none h-24 text-white"></textarea>
+                <button type="submit" class="bg-purple-600 text-white rounded-lg py-2 px-4 hover:bg-purple-700">Post</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-8 p-4 text-center">
+        <div class="space-y-2">
+            <p class="font-bold">Contact Us</p>
+            <p>Email: support@sportiohub.com</p>
+        </div>
+        <div class="space-y-2 mt-4">
+            <p class="font-bold">About Us</p>
+            <p>Sportio Hub aims to empower athletes with training, funding, and AI support.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const postForm = document.getElementById('postForm');
+            const postContent = document.getElementById('postContent');
+            const postContainer = document.getElementById('postContainer');
+
+            postForm.addEventListener('submit', (e) => {
+                e.preventDefault(); // Prevent form submission
+
+                const content = postContent.value.trim();
+                if (content) {
+                    // Create a new post element
+                    const postElement = document.createElement('div');
+                    postElement.classList.add('border-b', 'border-gray-700', 'pb-4', 'mb-4');
+                    postElement.innerHTML = `
+                        <p class="text-gray-300">"${content}"</p>
+                        <span class="text-sm text-gray-500">- New User</span>
+                    `;
+
+                    // Append the new post to the container
+                    postContainer.appendChild(postElement);
+
+                    // Clear the textarea
+                    postContent.value = '';
+                } else {
+                    alert('Post content cannot be empty.');
+                }
+            });
+        });
+    </script>
+
+    <!-- Styles -->
+    <style>
+        @keyframes slide {
+            0%, 20% { transform: translateX(0); }
+            33%, 53% { transform: translateX(-100%); }
+            66%, 86% { transform: translateX(-200%); }
+        }
+        .animate-slide { animation: slide 12s infinite; }
+    </style>
+</body>
+</html>
