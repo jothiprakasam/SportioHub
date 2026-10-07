@@ -3,70 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sportio Hub Chatbot</title>
+    <title>AI Sports &amp; Cricket Coach - SportioHub</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-900 text-white flex flex-col h-screen">
+<body class="bg-gray-950 text-gray-100 h-screen flex flex-col font-sans overflow-hidden">
+
     <!-- Navbar -->
-    <nav class="flex items-center justify-between bg-purple-700 p-4">
-        <div class="flex items-center space-x-4">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Sportio Hub Logo" class="h-10">
-            <span class="text-xl font-bold">Sportio Hub Chatbot</span>
+    <nav class="bg-gray-900/90 backdrop-blur-md border-b border-gray-800 px-6 py-4 flex-shrink-0">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-purple-600/30">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-indigo-300 to-white bg-clip-text text-transparent">SportioHub</span>
+                </div>
+            </a>
+            
+            <div class="flex items-center space-x-2 sm:space-x-4 md:space-x-6 text-sm font-medium">
+                <a href="/" class="text-gray-300 hover:text-white transition">Feed</a>
+                <a href="/athletes" class="text-gray-300 hover:text-white transition">Athletes</a>
+                <a href="/events" class="text-gray-300 hover:text-white transition">Events</a>
+                <a href="/analyzer" class="text-gray-300 hover:text-white transition">Pose Analyzer</a>
+                <a href="/chatbot" class="text-purple-400 border-b-2 border-purple-500 pb-1 font-bold">AI Coach</a>
+            </div>
         </div>
-        <a href="/" class="hover:text-gray-300">Back to Home</a>
     </nav>
 
-    <!-- Chat Area -->
-    <div class="flex-grow overflow-y-auto p-4 space-y-4" id="chatbox">
-        <!-- Chat messages dynamically rendered here -->
+    <!-- Chat Messages Scroll Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 overflow-y-auto space-y-4" id="chatbox">
+        <!-- Intro Message -->
+        <div class="flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl bg-purple-600 flex items-center justify-center text-white text-sm shadow-md flex-shrink-0">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="bg-gray-900 border border-gray-800 p-4 rounded-2xl rounded-tl-none max-w-xl text-xs sm:text-sm text-gray-200 leading-relaxed shadow-lg">
+                <p class="font-bold text-purple-400 mb-1">SportioHub AI Coach:</p>
+                <p>Hello athlete! I am your AI Cricket &amp; Sports Performance Coach. You can ask me about batting biomechanics (like keeping a high elbow on the cover drive), fast bowling drills, fitness conditioning, or how to register for sports events.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Quick Prompts Bar -->
+    <div class="max-w-4xl w-full mx-auto px-4 pb-2 flex gap-2 overflow-x-auto text-xs no-scrollbar flex-shrink-0">
+        <button onclick="sendQuick('How do I keep my lead elbow high during a cover drive?')" class="bg-gray-900 hover:bg-purple-900/30 border border-gray-800 hover:border-purple-500/40 text-gray-300 px-3 py-1.5 rounded-full whitespace-nowrap transition">
+            🏏 Cover Drive High Elbow
+        </button>
+        <button onclick="sendQuick('How to increase fast bowling pace and seam control?')" class="bg-gray-900 hover:bg-purple-900/30 border border-gray-800 hover:border-purple-500/40 text-gray-300 px-3 py-1.5 rounded-full whitespace-nowrap transition">
+            ⚡ Fast Bowling Pace
+        </button>
+        <button onclick="sendQuick('What drills help build agility and sprint speed?')" class="bg-gray-900 hover:bg-purple-900/30 border border-gray-800 hover:border-purple-500/40 text-gray-300 px-3 py-1.5 rounded-full whitespace-nowrap transition">
+            🏃 Speed &amp; Agility
+        </button>
+        <button onclick="sendQuick('How can I attend sports events and tournaments on SportioHub?')" class="bg-gray-900 hover:bg-purple-900/30 border border-gray-800 hover:border-purple-500/40 text-gray-300 px-3 py-1.5 rounded-full whitespace-nowrap transition">
+            🏆 Event Registration
+        </button>
     </div>
 
-    <!-- Input Area -->
-    <form id="chat-form" class="flex items-center p-4 bg-gray-800">
-        <input type="text" id="prompt" name="prompt" placeholder="Ask the chatbot..." class="flex-grow p-2 bg-gray-700 rounded-lg text-white">
-        <button type="submit" class="ml-4 px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700">Send</button>
-    </form>
+    <!-- Input Form -->
+    <div class="bg-gray-900 border-t border-gray-800 p-4 flex-shrink-0">
+        <form id="chatForm" class="max-w-4xl mx-auto flex items-center gap-3">
+            <input type="text" id="userInput" placeholder="Ask your AI coach anything about sports, drills, or batting technique..." class="flex-grow bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition">
+            <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-5 py-3 rounded-xl shadow-lg shadow-purple-600/30 transition flex items-center gap-2 text-xs sm:text-sm flex-shrink-0">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span class="hidden sm:inline">Send</span>
+            </button>
+        </form>
+    </div>
 
     <script>
-        const chatForm = document.getElementById('chat-form');
-        const chatBox = document.getElementById('chatbox');
+        const chatbox = document.getElementById('chatbox');
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
 
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const prompt = document.getElementById('prompt').value;
+        function appendMessage(text, isUser = false) {
+            const wrapper = document.createElement('div');
+            wrapper.className = isUser ? "flex items-start justify-end gap-3" : "flex items-start gap-3";
+            
+            if (isUser) {
+                wrapper.innerHTML = `
+                    <div class="bg-purple-600 p-4 rounded-2xl rounded-tr-none max-w-xl text-xs sm:text-sm text-white leading-relaxed shadow-lg">
+                        ${text}
+                    </div>
+                    <div class="w-9 h-9 rounded-xl bg-purple-800 flex items-center justify-center text-white text-xs font-bold shadow-md flex-shrink-0">
+                        Me
+                    </div>
+                `;
+            } else {
+                const formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                wrapper.innerHTML = `
+                    <div class="w-9 h-9 rounded-xl bg-purple-600 flex items-center justify-center text-white text-sm shadow-md flex-shrink-0">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 p-4 rounded-2xl rounded-tl-none max-w-xl text-xs sm:text-sm text-gray-200 leading-relaxed shadow-lg">
+                        <p class="font-bold text-purple-400 mb-1">SportioHub AI Coach:</p>
+                        <p>${formatted}</p>
+                    </div>
+                `;
+            }
+            chatbox.appendChild(wrapper);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
 
-            if (prompt.trim() === '') return;
-
-            // Append user's message to chatbox
-            const userMessage = `<div class="text-right"><p class="bg-purple-600 p-2 rounded-lg inline-block">${prompt}</p></div>`;
-            chatBox.innerHTML += userMessage;
-
-            // Fetch response from backend
+        async function processQuery(query) {
+            appendMessage(query, true);
             try {
-                const response = await fetch('/chatbot', {
+                const res = await fetch('/chatbot', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt }),
+                    body: JSON.stringify({ prompt: query })
                 });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    const errorMessage = `<div class="text-left"><p class="bg-red-600 p-2 rounded-lg inline-block">${data.error}</p></div>`;
-                    chatBox.innerHTML += errorMessage;
-                } else {
-                    const botMessage = `<div class="text-left"><p class="bg-gray-700 p-2 rounded-lg inline-block">${data.response}</p></div>`;
-                    chatBox.innerHTML += botMessage;
-                }
+                const data = await res.json();
+                appendMessage(data.response || data.error || "No response received.");
             } catch (err) {
-                const errorMessage = `<div class="text-left"><p class="bg-red-600 p-2 rounded-lg inline-block">Error: Unable to fetch response</p></div>`;
-                chatBox.innerHTML += errorMessage;
+                appendMessage("Sorry, I could not process your request at this moment.");
             }
+        }
 
-            // Clear the input field
-            document.getElementById('prompt').value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const q = userInput.value.trim();
+            if (!q) return;
+            userInput.value = '';
+            processQuery(q);
         });
+
+        function sendQuick(text) {
+            userInput.value = '';
+            processQuery(text);
+        }
     </script>
 </body>
 </html>

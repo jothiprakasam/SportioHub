@@ -3,106 +3,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sportio Hub</title>
+    <title>SportioHub - Athletes Connect, Events & AI Pose Analyzer</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.92; transform: scale(1.02); }
+        }
+        .animate-subtle { animation: pulse-subtle 3s infinite; }
+    </style>
 </head>
-<body class="bg-gray-900 text-white">
-    <!-- Navbar -->
-    <nav class="flex items-center justify-between bg-purple-700 p-4">
-        <div class="flex items-center space-x-4">
-            <img src="{{ url_for('static', filename='images/sportioHub - Level up your Game (3).jpg') }}" alt="Sportio Hub Logo" class="h-10">
-            <span class="text-xl font-bold">Sportio Hub - Level Up Your Game</span>
-        </div>
-        <div class="flex space-x-6">
-            <a href="http://localhost:3000/" class="hover:text-gray-300">Chatbot</a>
-            <a href="/ai" class="hover:text-gray-300">AI Assistant</a>
-            <a href="/jobs" class="hover:text-gray-300">Career</a>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Top Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-purple-600/30">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-indigo-300 to-white bg-clip-text text-transparent">SportioHub</span>
+                    <span class="hidden md:inline-block text-xs text-purple-400 font-semibold uppercase tracking-wider ml-2">Level Up Your Game</span>
+                </div>
+            </a>
+            
+            <div class="flex items-center space-x-1 sm:space-x-3 md:space-x-6 text-sm font-medium">
+                <a href="/" class="text-purple-400 border-b-2 border-purple-500 pb-1">Feed</a>
+                <a href="/athletes" class="text-gray-300 hover:text-white transition">Athletes</a>
+                <a href="/events" class="text-gray-300 hover:text-white transition">Events</a>
+                <a href="/analyzer" class="text-purple-300 hover:text-white flex items-center gap-1.5 bg-purple-900/40 border border-purple-500/40 px-3 py-1.5 rounded-lg transition hover:bg-purple-800/50">
+                    <i class="fa-solid fa-person-running text-xs"></i> Pose Analyzer
+                </a>
+                <a href="/jobs" class="text-gray-300 hover:text-white transition">Careers</a>
+                <a href="/chatbot" class="text-gray-300 hover:text-white transition">AI Coach</a>
+                <a href="/history" class="text-gray-300 hover:text-white transition">History</a>
+            </div>
         </div>
     </nav>
 
-    <!-- Slideshow -->
-    <section class="relative w-full h-64 mt-4">
-        <div class="slideshow w-full h-full overflow-hidden relative">
-            <div class="flex w-full h-full animate-slide">
-                <img src="{{ url_for('static', filename='images/sport1.jpg') }}" alt="Sport Photo 1" class="w-full object-cover">
-                <img src="{{ url_for('static', filename='images/sport2.jpg') }}" alt="Sport Photo 2" class="w-full object-cover">
-                <img src="{{ url_for('static', filename='images/sport4.jpeg') }}" alt="Sport Photo 3" class="w-full object-cover">
-                <img src="{{ url_for('static', filename='images/sport4.jpeg') }}" alt="Sport Photo 4" class="w-full object-cover">
-                <img src="{{ url_for('static', filename='images/sport1.jpg') }}" alt="Sport Photo 1" class="w-full object-cover">
-                <img src="{{ url_for('static', filename='images/sport2.jpg') }}" alt="Sport Photo 2" class="w-full object-cover">
-                <img src="{{ url_for('static', filename='images/sport4.jpeg') }}" alt="Sport Photo 3" class="w-full object-cover">
-                <img src="{{ url_for('static', filename='images/sport-career.jpeg') }}" alt="Sport Photo 4" class="w-full object-cover">
+    <!-- Hero Banner with CTA -->
+    <section class="relative bg-gradient-to-b from-purple-950/60 via-gray-900 to-gray-950 py-12 px-6 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-semibold tracking-wide uppercase">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI-Powered Sports Performance Hub
+                </div>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+                    Connect, Compete & Perfect Your Form With <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 bg-clip-text text-transparent">AI Video Analysis</span>
+                </h1>
+                <p class="text-gray-300 text-base sm:text-lg max-w-2xl leading-relaxed">
+                    SportioHub connects athletes across disciplines, simplifies attending sports tournaments and trials, and offers professional AI pose analysis for cricket batting mechanics.
+                </p>
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="/analyzer" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-purple-600/30 transition transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-video"></i> Try Cricket Pose Analyzer
+                    </a>
+                    <a href="/events" class="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 font-semibold px-6 py-3.5 rounded-xl transition">
+                        <i class="fa-solid fa-calendar-days text-purple-400"></i> Browse Sports Events
+                    </a>
+                    <a href="/athletes" class="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 font-semibold px-6 py-3.5 rounded-xl transition">
+                        <i class="fa-solid fa-users text-indigo-400"></i> Connect with Athletes
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Pose Analyzer Card Widget -->
+            <div class="lg:col-span-5">
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-purple-500/30 shadow-2xl relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="flex items-center justify-between pb-4 border-b border-gray-700">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
+                                <i class="fa-solid fa-cricket-bat-ball text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white">Cricket Pose Analyzer</h3>
+                                <p class="text-xs text-gray-400">Cover Drive Angle & Form Matching</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Active</span>
+                    </div>
+
+                    <div class="mt-4 space-y-3 text-sm text-gray-300">
+                        <p class="text-xs text-gray-400">Sample videos <code class="text-purple-300 font-mono">default.mp4</code> &amp; <code class="text-purple-300 font-mono">comparison.mp4</code> are loaded and ready for immediate side-by-side analysis.</p>
+                        
+                        <div class="grid grid-cols-2 gap-2 text-xs py-2 bg-gray-950/60 p-3 rounded-xl border border-gray-800">
+                            <div>
+                                <span class="text-gray-400 block">Biomechanical Metrics:</span>
+                                <span class="font-semibold text-white">Lead Elbow &amp; Knee Flex</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-400 block">Analysis Engine:</span>
+                                <span class="font-semibold text-emerald-400">MediaPipe Pose AI</span>
+                            </div>
+                        </div>
+
+                        <form action="/analyzer" method="POST">
+                            <input type="hidden" name="action" value="run_sample">
+                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-purple-600/25 transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-play"></i> Run 1-Click Sample Video Test
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Community Post Section -->
-    <section class="mt-6 px-4">
-        <div class="bg-gray-800 rounded-lg shadow-md p-4">
-            <h2 class="text-lg font-bold mb-4">Community Posts</h2>
-            <div id="postContainer" class="border-b border-gray-700 pb-4 mb-4">
-                <p class="text-gray-300">"Excited to announce a new training event this weekend!"</p>
-                <span class="text-sm text-gray-500">- User123</span>
+    <!-- Main Content Area: Feed, Events, and Athletes -->
+    <main class="max-w-7xl mx-auto px-6 py-10 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left / Center: Community Feed -->
+        <div class="lg:col-span-8 space-y-6">
+            
+            <!-- Create New Post Card -->
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 shadow-lg">
+                <h2 class="text-base font-bold text-white flex items-center gap-2 mb-3">
+                    <i class="fa-solid fa-pen-to-square text-purple-400"></i> Share Training Update or Event
+                </h2>
+                <form id="postForm" class="space-y-3">
+                    <textarea id="postContent" rows="3" placeholder="Share your latest workout, tournament experience, or training tip with the community..." class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-purple-500 transition resize-none"></textarea>
+                    
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                        <div class="flex items-center gap-2">
+                            <label for="authorSport" class="text-xs text-gray-400 font-medium">Sport:</label>
+                            <select id="authorSport" class="bg-gray-950 border border-gray-800 text-xs rounded-lg px-2.5 py-1.5 text-gray-300 focus:outline-none focus:border-purple-500">
+                                <option value="Cricket">Cricket</option>
+                                <option value="Football">Football</option>
+                                <option value="Badminton">Badminton</option>
+                                <option value="Tennis">Tennis</option>
+                                <option value="Athletics">Athletics</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="authorName" placeholder="Your Name" value="Athlete" class="bg-gray-950 border border-gray-800 text-xs rounded-lg px-2.5 py-1.5 text-gray-300 w-28 focus:outline-none focus:border-purple-500">
+                            <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-5 py-2 rounded-lg transition shadow-md shadow-purple-600/20 flex items-center gap-1.5">
+                                <i class="fa-solid fa-paper-plane"></i> Post
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <form id="postForm" class="flex flex-col space-y-2">
-                <textarea id="postContent" placeholder="Write your post here..." class="bg-gray-700 border border-gray-600 rounded-lg p-2 resize-none h-24 text-white"></textarea>
-                <button type="submit" class="bg-purple-600 text-white rounded-lg py-2 px-4 hover:bg-purple-700">Post</button>
-            </form>
+
+            <!-- Feed Header -->
+            <div class="flex items-center justify-between pt-2">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-fire text-amber-400"></i> Athlete Community Feed
+                </h2>
+                <span class="text-xs text-gray-400 font-medium">Real-Time Athlete Updates</span>
+            </div>
+
+            <!-- Posts Stream Container -->
+            <div id="postsList" class="space-y-4">
+                {% for p in posts %}
+                <div class="bg-gray-900 border border-gray-800/80 rounded-2xl p-5 transition hover:border-gray-700/80 shadow-md">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-700 to-indigo-600 flex items-center justify-center font-bold text-white text-sm">
+                                {{ p.author[:1] }}
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-white">{{ p.author }}</div>
+                                <div class="text-xs text-gray-400 flex items-center gap-2">
+                                    <span class="text-purple-400 font-semibold">{{ p.author_sport }}</span>
+                                    <span>•</span>
+                                    <span>{{ p.timestamp }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-medium">
+                            {{ p.author_sport }}
+                        </span>
+                    </div>
+
+                    <p class="text-sm text-gray-200 leading-relaxed mb-4">
+                        {{ p.content }}
+                    </p>
+
+                    <div class="flex items-center gap-4 pt-2 border-t border-gray-800/60 text-xs text-gray-400">
+                        <button onclick="likePost({{ p.id }}, this)" class="flex items-center gap-1.5 text-gray-400 hover:text-pink-400 transition">
+                            <i class="fa-regular fa-heart"></i>
+                            <span class="like-count">{{ p.likes }}</span> Likes
+                        </button>
+                        <button class="flex items-center gap-1.5 text-gray-400 hover:text-purple-400 transition">
+                            <i class="fa-regular fa-comment"></i> Comment
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-    </section>
+
+        <!-- Right Column: Events & Athletes Sidebar -->
+        <div class="lg:col-span-4 space-y-6">
+
+            <!-- Upcoming Events Sidebar Widget -->
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 shadow-lg space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-white flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-trophy text-amber-400"></i> Upcoming Sports Events
+                    </h3>
+                    <a href="/events" class="text-xs text-purple-400 hover:underline">View All</a>
+                </div>
+
+                <div class="space-y-3">
+                    {% for ev in events %}
+                    <div class="bg-gray-950 p-3.5 rounded-xl border border-gray-800 hover:border-purple-500/40 transition">
+                        <div class="flex items-center justify-between text-xs mb-1">
+                            <span class="text-purple-400 font-semibold uppercase">{{ ev.sport }}</span>
+                            <span class="text-gray-400"><i class="fa-regular fa-clock text-[10px]"></i> {{ ev.date }}</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-gray-100 hover:text-purple-300 transition line-clamp-1">
+                            {{ ev.title }}
+                        </h4>
+                        <div class="text-xs text-gray-400 mt-1 flex items-center gap-1 line-clamp-1">
+                            <i class="fa-solid fa-location-dot text-gray-500 text-[10px]"></i> {{ ev.location }}
+                        </div>
+                        <div class="mt-3 flex items-center justify-between pt-2 border-t border-gray-900">
+                            <span class="text-[11px] text-gray-400">{{ ev.registered_count }}/{{ ev.max_participants }} Registered</span>
+                            <a href="/events/{{ ev.id }}" class="text-xs font-semibold text-purple-400 hover:text-purple-300">
+                                Apply &rarr;
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Connect With Athletes Widget -->
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 shadow-lg space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-white flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-user-plus text-indigo-400"></i> Athletes You May Know
+                    </h3>
+                    <a href="/athletes" class="text-xs text-purple-400 hover:underline">Browse All</a>
+                </div>
+
+                <div class="space-y-3">
+                    {% for ath in athletes %}
+                    <div class="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-gray-950/80 border border-gray-800">
+                        <div class="flex items-center gap-3">
+                            <img src="{{ ath.avatar }}" alt="{{ ath.name }}" class="w-10 h-10 rounded-full object-cover border border-purple-500/30">
+                            <div>
+                                <h4 class="font-bold text-xs text-white">{{ ath.name }}</h4>
+                                <p class="text-[11px] text-purple-400">{{ ath.sport }} • {{ ath.role }}</p>
+                            </div>
+                        </div>
+                        <button onclick="toggleConnect({{ ath.id }}, this)" class="text-xs font-bold px-3 py-1.5 rounded-lg transition {{ 'bg-gray-800 text-gray-300' if ath.is_connected else 'bg-purple-600 text-white hover:bg-purple-500' }}">
+                            {{ 'Connected' if ath.is_connected else 'Connect' }}
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Pose Analyzer Quick Access Banner -->
+            <div class="bg-gradient-to-tr from-purple-900/60 to-indigo-900/60 border border-purple-500/40 rounded-2xl p-5 text-center space-y-3">
+                <i class="fa-solid fa-chart-line text-3xl text-purple-300"></i>
+                <h4 class="font-bold text-white text-base">Analyze Your Cover Drive</h4>
+                <p class="text-xs text-purple-200">
+                    Get instantaneous feedback on your lead elbow height, front knee bend, and balance.
+                </p>
+                <a href="/analyzer" class="inline-block w-full bg-white text-purple-900 hover:bg-purple-100 font-bold text-xs py-2.5 rounded-xl shadow-lg transition">
+                    Open Video Analyzer &rarr;
+                </a>
+            </div>
+
+        </div>
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-8 p-4 text-center">
-        <div class="space-y-2">
-            <p class="font-bold">Contact Us</p>
-            <p>Email: support@sportiohub.com</p>
-        </div>
-        <div class="space-y-2 mt-4">
-            <p class="font-bold">About Us</p>
-            <p>Sportio Hub aims to empower athletes with training, funding, and AI support.</p>
+    <footer class="bg-gray-900 border-t border-gray-800 py-8 px-6 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="font-extrabold text-gray-300">SportioHub</span>
+                <span>• Empowering Athletes with AI &amp; Community</span>
+            </div>
+            <div class="flex gap-4">
+                <a href="/athletes" class="hover:text-gray-400">Athletes Network</a>
+                <a href="/events" class="hover:text-gray-400">Events Hub</a>
+                <a href="/analyzer" class="hover:text-gray-400">Pose Analyzer</a>
+                <a href="/jobs" class="hover:text-gray-400">Career Recommender</a>
+                <a href="/chatbot" class="hover:text-gray-400">AI Coach</a>
+            </div>
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- Interactive JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const postForm = document.getElementById('postForm');
-            const postContent = document.getElementById('postContent');
-            const postContainer = document.getElementById('postContainer');
+        // Post submission via AJAX
+        document.getElementById('postForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const content = document.getElementById('postContent').value.trim();
+            const author = document.getElementById('authorName').value.trim() || 'Athlete';
+            const authorSport = document.getElementById('authorSport').value;
 
-            postForm.addEventListener('submit', (e) => {
-                e.preventDefault(); // Prevent form submission
+            if (!content) {
+                alert('Please write something before posting.');
+                return;
+            }
 
-                const content = postContent.value.trim();
-                if (content) {
-                    // Create a new post element
-                    const postElement = document.createElement('div');
-                    postElement.classList.add('border-b', 'border-gray-700', 'pb-4', 'mb-4');
-                    postElement.innerHTML = `
-                        <p class="text-gray-300">"${content}"</p>
-                        <span class="text-sm text-gray-500">- New User</span>
+            try {
+                const res = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, author, author_sport: authorSport })
+                });
+                const data = await res.json();
+                if (data.post) {
+                    const postCard = document.createElement('div');
+                    postCard.className = "bg-gray-900 border border-purple-500/50 rounded-2xl p-5 transition shadow-lg animate-pulse";
+                    postCard.innerHTML = `
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-700 to-indigo-600 flex items-center justify-center font-bold text-white text-sm">
+                                    ${data.post.author.charAt(0)}
+                                </div>
+                                <div>
+                                    <div class="font-bold text-sm text-white">${data.post.author}</div>
+                                    <div class="text-xs text-gray-400 flex items-center gap-2">
+                                        <span class="text-purple-400 font-semibold">${data.post.author_sport}</span>
+                                        <span>•</span>
+                                        <span>Just now</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-medium">
+                                ${data.post.author_sport}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-200 leading-relaxed mb-4">${data.post.content}</p>
+                        <div class="flex items-center gap-4 pt-2 border-t border-gray-800/60 text-xs text-gray-400">
+                            <button onclick="likePost(${data.post.id}, this)" class="flex items-center gap-1.5 text-gray-400 hover:text-pink-400 transition">
+                                <i class="fa-regular fa-heart"></i>
+                                <span class="like-count">0</span> Likes
+                            </button>
+                        </div>
                     `;
-
-                    // Append the new post to the container
-                    postContainer.appendChild(postElement);
-
-                    // Clear the textarea
-                    postContent.value = '';
-                } else {
-                    alert('Post content cannot be empty.');
+                    const postsList = document.getElementById('postsList');
+                    postsList.insertBefore(postCard, postsList.firstChild);
+                    document.getElementById('postContent').value = '';
+                    setTimeout(() => postCard.classList.remove('animate-pulse'), 1500);
                 }
-            });
+            } catch (err) {
+                alert('Could not submit post. Please try again.');
+            }
         });
-    </script>
 
-    <!-- Styles -->
-    <style>
-        @keyframes slide {
-            0%, 20% { transform: translateX(0); }
-            33%, 53% { transform: translateX(-100%); }
-            66%, 86% { transform: translateX(-200%); }
+        // Like post
+        async function likePost(postId, btn) {
+            try {
+                const res = await fetch(`/api/posts/${postId}/like`, { method: 'POST' });
+                const data = await res.json();
+                btn.querySelector('.like-count').textContent = data.likes;
+                btn.classList.add('text-pink-500');
+            } catch (err) {
+                console.error(err);
+            }
         }
-        .animate-slide { animation: slide 12s infinite; }
-    </style>
+
+        // Toggle Connect athlete
+        async function toggleConnect(athleteId, btn) {
+            try {
+                const res = await fetch(`/api/athletes/${athleteId}/connect`, { method: 'POST' });
+                const data = await res.json();
+                if (data.is_connected) {
+                    btn.textContent = 'Connected';
+                    btn.className = 'text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 transition';
+                } else {
+                    btn.textContent = 'Connect';
+                    btn.className = 'text-xs font-bold px-3 py-1.5 rounded-lg bg-purple-600 text-white hover:bg-purple-500 transition';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
 </body>
 </html>

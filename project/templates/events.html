@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Events &amp; Tournaments - SportioHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-purple-600/30">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-indigo-300 to-white bg-clip-text text-transparent">SportioHub</span>
+                </div>
+            </a>
+            
+            <div class="flex items-center space-x-2 sm:space-x-4 md:space-x-6 text-sm font-medium">
+                <a href="/" class="text-gray-300 hover:text-white transition">Feed</a>
+                <a href="/athletes" class="text-gray-300 hover:text-white transition">Athletes</a>
+                <a href="/events" class="text-purple-400 border-b-2 border-purple-500 pb-1">Events</a>
+                <a href="/analyzer" class="text-purple-300 hover:text-white flex items-center gap-1.5 bg-purple-900/40 border border-purple-500/40 px-3 py-1.5 rounded-lg transition hover:bg-purple-800/50">
+                    <i class="fa-solid fa-person-running text-xs"></i> Pose Analyzer
+                </a>
+                <a href="/jobs" class="text-gray-300 hover:text-white transition">Careers</a>
+                <a href="/chatbot" class="text-gray-300 hover:text-white transition">AI Coach</a>
+                <a href="/history" class="text-gray-300 hover:text-white transition">History</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header & Action -->
+    <section class="bg-gray-900 border-b border-gray-800 py-10 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-3xl font-black text-white flex items-center gap-3">
+                    <i class="fa-solid fa-calendar-check text-purple-400"></i> Sports Events &amp; Trials Hub
+                </h1>
+                <p class="text-gray-400 text-sm mt-1">
+                    Discover upcoming tournaments, state selection trials, and masterclasses. Attend or apply directly!
+                </p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="openCreateModal()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold px-5 py-3 rounded-xl shadow-lg shadow-purple-600/30 transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Host a New Event
+                </button>
+            </div>
+        </div>
+
+        <!-- Sport Category Pills -->
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-2 mt-6">
+            {% for s in ['All', 'Cricket', 'Football', 'Badminton', 'Athletics'] %}
+            <a href="/events?sport={{ s }}" class="text-xs px-3.5 py-2 rounded-xl font-semibold transition {{ 'bg-purple-600 text-white shadow-md shadow-purple-600/30' if current_sport == s else 'bg-gray-950 text-gray-400 hover:text-white border border-gray-800' }}">
+                {{ s }}
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Events Cards Grid -->
+    <main class="max-w-7xl mx-auto px-6 py-10 flex-grow">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for e in events %}
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-purple-500/40 transition shadow-lg flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between text-xs mb-3">
+                        <span class="px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-bold uppercase tracking-wider">
+                            {{ e.sport }}
+                        </span>
+                        <span class="px-2 py-0.5 rounded-md bg-gray-800 text-gray-300 font-medium">
+                            {{ e.event_type }}
+                        </span>
+                    </div>
+
+                    <h3 class="font-extrabold text-lg text-white mb-2 leading-snug">
+                        {{ e.title }}
+                    </h3>
+
+                    <div class="space-y-1.5 text-xs text-gray-300 mb-4">
+                        <p class="flex items-center gap-2">
+                            <i class="fa-regular fa-calendar text-purple-400 w-4 text-center"></i>
+                            <span>{{ e.date }}</span>
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-indigo-400 w-4 text-center"></i>
+                            <span>{{ e.location }}</span>
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-gray-400 w-4 text-center"></i>
+                            <span class="text-gray-400">Org: {{ e.organizer }}</span>
+                        </p>
+                    </div>
+
+                    <p class="text-xs text-gray-400 line-clamp-3 leading-relaxed mb-4">
+                        {{ e.description }}
+                    </p>
+
+                    <!-- Capacity Bar -->
+                    <div class="bg-gray-950 p-3 rounded-xl border border-gray-800/80 mb-4">
+                        <div class="flex justify-between text-[11px] text-gray-400 mb-1.5 font-medium">
+                            <span>Attendance Slots:</span>
+                            <span class="text-purple-300 font-bold">{{ e.registered_count }} / {{ e.max_participants }}</span>
+                        </div>
+                        <div class="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
+                            {% set pct = (e.registered_count / e.max_participants * 100) | round | int %}
+                            <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full" style="width: {{ pct }}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-gray-800 flex items-center justify-between gap-3">
+                    <a href="/events/{{ e.id }}" class="text-xs text-gray-400 hover:text-purple-300 font-semibold py-2">
+                        Details &rarr;
+                    </a>
+                    <button onclick="openApplyModal({{ e.id }}, '{{ e.title }}', '{{ e.sport }}')" class="flex-grow bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-md shadow-purple-600/20 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-ticket"></i> Attend / Apply Now
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Modal: Attend / Apply for Event -->
+    <div id="applyModal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeApplyModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="mb-4">
+                <span class="text-xs font-bold uppercase text-purple-400" id="modalSport">Sport</span>
+                <h3 class="text-lg font-black text-white" id="modalEventTitle">Event Title</h3>
+                <p class="text-xs text-gray-400 mt-1">Submit your athlete registration to attend this event.</p>
+            </div>
+
+            <form id="applyForm" class="space-y-3.5">
+                <input type="hidden" id="modalEventId">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Your Full Name:</label>
+                    <input type="text" id="athleteName" required placeholder="e.g. Virat Sharma" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Email / Contact:</label>
+                    <input type="email" id="contactEmail" required placeholder="athlete@example.com" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Your Skill Level:</label>
+                        <select id="skillLevel" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate" selected>Intermediate</option>
+                            <option value="Advanced">Advanced / Pro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Primary Role:</label>
+                        <input type="text" id="athleteRole" placeholder="e.g. Batsman, Winger" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Notes / Achievements (Optional):</label>
+                    <textarea id="notes" rows="2" placeholder="Mention past tournaments or club..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 resize-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 px-4 rounded-xl shadow-lg shadow-purple-600/30 transition text-xs flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check"></i> Confirm Attendance &amp; Registration
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Host a New Event -->
+    <div id="createModal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <button onclick="closeCreateModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <h3 class="text-lg font-black text-white mb-1">Host a New Sporting Event</h3>
+            <p class="text-xs text-gray-400 mb-4">Post tournaments, trials, or coaching camps for the athlete community.</p>
+
+            <form id="createForm" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Event Title:</label>
+                    <input type="text" id="evTitle" required placeholder="e.g. Regional Premier T20 Cricket Cup" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Sport:</label>
+                        <select id="evSport" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                            <option value="Cricket">Cricket</option>
+                            <option value="Football">Football</option>
+                            <option value="Badminton">Badminton</option>
+                            <option value="Tennis">Tennis</option>
+                            <option value="Athletics">Athletics</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Type:</label>
+                        <select id="evType" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                            <option value="Tournament">Tournament</option>
+                            <option value="Selection Trials">Selection Trials</option>
+                            <option value="Coaching Camp">Coaching Camp</option>
+                            <option value="Friendly Match">Friendly Match</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Date:</label>
+                        <input type="date" id="evDate" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Max Participants:</label>
+                        <input type="number" id="evMax" value="50" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Venue / Location:</label>
+                    <input type="text" id="evLocation" required placeholder="e.g. Gymkhana Grounds, Bangalore" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Organizer Name:</label>
+                    <input type="text" id="evOrg" required placeholder="e.g. Bangalore Cricket Club" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Description:</label>
+                    <textarea id="evDesc" rows="2" placeholder="Details about rules, eligibility, prizes..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 resize-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 px-4 rounded-xl shadow-lg shadow-purple-600/30 transition text-xs flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Publish Event
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 py-6 text-center text-xs text-gray-500">
+        <p>&copy; 2026 SportioHub • Sports Events &amp; Tournament Applications</p>
+    </footer>
+
+    <!-- Script for modals and AJAX -->
+    <script>
+        function openApplyModal(id, title, sport) {
+            document.getElementById('modalEventId').value = id;
+            document.getElementById('modalEventTitle').textContent = title;
+            document.getElementById('modalSport').textContent = sport;
+            document.getElementById('applyModal').classList.remove('hidden');
+        }
+
+        function closeApplyModal() {
+            document.getElementById('applyModal').classList.add('hidden');
+        }
+
+        function openCreateModal() {
+            document.getElementById('createModal').classList.remove('hidden');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createModal').classList.add('hidden');
+        }
+
+        // Apply Form submission
+        document.getElementById('applyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const eventId = document.getElementById('modalEventId').value;
+            const formData = new FormData();
+            formData.append('athlete_name', document.getElementById('athleteName').value);
+            formData.append('contact_email', document.getElementById('contactEmail').value);
+            formData.append('skill_level', document.getElementById('skillLevel').value);
+            formData.append('athlete_sport', document.getElementById('modalSport').textContent);
+            formData.append('notes', document.getElementById('notes').value);
+
+            try {
+                const res = await fetch(`/events/${eventId}/apply`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.message) {
+                    alert('🎉 ' + data.message);
+                    closeApplyModal();
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Could not complete registration. Please try again.');
+            }
+        });
+
+        // Create Event Form submission
+        document.getElementById('createForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('title', document.getElementById('evTitle').value);
+            formData.append('sport', document.getElementById('evSport').value);
+            formData.append('event_type', document.getElementById('evType').value);
+            formData.append('date', document.getElementById('evDate').value);
+            formData.append('max_participants', document.getElementById('evMax').value);
+            formData.append('location', document.getElementById('evLocation').value);
+            formData.append('organizer', document.getElementById('evOrg').value);
+            formData.append('description', document.getElementById('evDesc').value);
+
+            try {
+                const res = await fetch('/events/new', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.message) {
+                    alert('✅ ' + data.message);
+                    closeCreateModal();
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Could not publish event. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

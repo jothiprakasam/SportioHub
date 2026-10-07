@@ -3,26 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trainer Video Analysis</title>
+    <title>Cricket Pose Analyzer - SportioHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border-left-color: #9333ea;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body>
-    <h1>Trainer Video Analysis</h1>
-    <form action="/trainer" method="POST" enctype="multipart/form-data">
-        <label for="default_video">Upload Default Shot Video:</label>
-        <input type="file" id="default_video" name="default_video" accept="video/*" required><br><br>
-        
-        <label for="user_video">Upload User Shot Video:</label>
-        <input type="file" id="user_video" name="user_video" accept="video/*" required><br><br>
-        
-        <button type="submit">Analyze Videos</button>
-    </form>
-    
-    {% if output_video %}
-    <h2>Comparison Output:</h2>
-    <video width="800" controls>
-        <source src="{{ url_for('static', filename='outputs/' + output_video) }}" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    {% endif %}
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-purple-600/30">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-indigo-300 to-white bg-clip-text text-transparent">SportioHub</span>
+                </div>
+            </a>
+            
+            <div class="flex items-center space-x-2 sm:space-x-4 md:space-x-6 text-sm font-medium">
+                <a href="/" class="text-gray-300 hover:text-white transition">Feed</a>
+                <a href="/athletes" class="text-gray-300 hover:text-white transition">Athletes</a>
+                <a href="/events" class="text-gray-300 hover:text-white transition">Events</a>
+                <a href="/analyzer" class="text-purple-400 border-b-2 border-purple-500 pb-1 flex items-center gap-1.5 font-bold">
+                    <i class="fa-solid fa-person-running text-xs"></i> Pose Analyzer
+                </a>
+                <a href="/ai" class="text-gray-300 hover:text-white transition">Image AI</a>
+                <a href="/jobs" class="text-gray-300 hover:text-white transition">Careers</a>
+                <a href="/chatbot" class="text-gray-300 hover:text-white transition">AI Coach</a>
+                <a href="/history" class="text-gray-300 hover:text-white transition">History</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="bg-gradient-to-b from-purple-950/50 via-gray-900 to-gray-950 border-b border-gray-800 py-10 px-6">
+        <div class="max-w-6xl mx-auto text-center space-y-4">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold uppercase tracking-wider">
+                <i class="fa-solid fa-cricket-bat-ball"></i> Biomechanical Cricket Batting AI
+            </div>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
+                Cricket Pose Analyzer: <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Cover Drive</span>
+            </h1>
+            <p class="text-gray-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                Compare your batting execution frame-by-frame against an orthodox reference shot. Tracks lead elbow elevation, knee flexion angle, and balance to produce professional coaching feedback.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-6 py-10 flex-grow space-y-10">
+
+        <!-- Error Notification -->
+        {% if error %}
+        <div class="bg-red-500/10 border border-red-500/40 text-red-300 px-5 py-4 rounded-2xl flex items-center gap-3 text-sm">
+            <i class="fa-solid fa-circle-exclamation text-lg"></i>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Quick 1-Click Sample Test & Custom Upload Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Card 1: Instant Sample Video Analysis (default.mp4 vs comparison.mp4) -->
+            <div class="bg-gradient-to-br from-gray-900 to-purple-950/40 border-2 border-purple-500/40 rounded-2xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-bold uppercase">
+                            Pre-Loaded Test
+                        </span>
+                        <i class="fa-solid fa-bolt text-amber-400"></i>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white mb-2">Analyze Sample Cricket Videos</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed mb-4">
+                        Runs MediaPipe Pose AI on the repository's sample videos:
+                        <br><span class="font-mono text-purple-300">• Reference: default.mp4 (Pro Shot)</span>
+                        <br><span class="font-mono text-indigo-300">• Athlete: comparison.mp4 (User Shot)</span>
+                    </p>
+
+                    <div class="bg-gray-950/80 p-3.5 rounded-xl border border-gray-800 text-xs text-gray-400 space-y-1 mb-6">
+                        <div class="flex justify-between">
+                            <span>Keypoint Tracking:</span>
+                            <span class="text-emerald-400 font-semibold">33 3D Pose Landmarks</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Biomechanical Metrics:</span>
+                            <span class="text-white font-semibold">Lead Elbow &amp; Knee Flex</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Output Rendering:</span>
+                            <span class="text-purple-400 font-semibold">Dual-Screen H.264 Video</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="sampleForm" action="/analyzer" method="POST">
+                    <input type="hidden" name="action" value="run_sample">
+                    <button type="submit" id="sampleBtn" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i> Run 1-Click Sample Videos Analysis
+                    </button>
+                </form>
+            </div>
+
+            <!-- Card 2: Custom Video Upload -->
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="px-3 py-1 rounded-full bg-gray-800 text-gray-300 text-xs font-bold uppercase">
+                            Custom Upload
+                        </span>
+                        <i class="fa-solid fa-cloud-arrow-up text-gray-400"></i>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white mb-2">Upload Your Own Batting Video</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed mb-4">
+                        Upload your recorded cricket stroke video to benchmark your technique against the reference model.
+                    </p>
+
+                    <form id="uploadForm" action="/analyzer" method="POST" enctype="multipart/form-data" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Your Batting Video (Required):</label>
+                            <input type="file" name="user_video" accept="video/*" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500 cursor-pointer">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Reference Pro Video (Optional - defaults to sample pro):</label>
+                            <input type="file" name="default_video" accept="video/*" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-800 file:text-gray-300 cursor-pointer">
+                        </div>
+
+                        <button type="submit" id="uploadBtn" class="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 mt-2">
+                            <i class="fa-solid fa-upload"></i> Analyze Custom Video
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Loading Overlay -->
+        <div id="loadingOverlay" class="hidden bg-gray-900 border border-purple-500/40 rounded-2xl p-8 text-center space-y-4 shadow-2xl">
+            <div class="flex justify-center">
+                <div class="spinner"></div>
+            </div>
+            <h3 class="text-lg font-bold text-white">Analyzing Cricket Biomechanics...</h3>
+            <p class="text-xs text-gray-400 max-w-md mx-auto">
+                Running MediaPipe Pose landmark extraction, calculating lead elbow &amp; knee angles, detecting shot phases, and rendering the side-by-side comparison video. Please hold on!
+            </p>
+        </div>
+
+        <!-- Results Display Section -->
+        {% if analyzed %}
+        <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-8">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-800">
+                <div>
+                    <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Analysis Complete</span>
+                    <h2 class="text-2xl font-black text-white">Cover Drive Biomechanical Report</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="{{ url_for('static', filename='outputs/' + output_video) }}" download class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-lg transition flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> Download Video
+                    </a>
+                </div>
+            </div>
+
+            <!-- Video Player (Side-by-Side Comparison) -->
+            <div class="space-y-2">
+                <h3 class="text-sm font-bold text-gray-300 flex items-center gap-2">
+                    <i class="fa-solid fa-film text-purple-400"></i> Side-by-Side Comparison Video (Pro vs User)
+                </h3>
+                <div class="rounded-2xl overflow-hidden border border-gray-800 bg-black shadow-2xl">
+                    <video width="100%" controls autoplay loop class="w-full aspect-video">
+                        <source src="{{ url_for('static', filename='outputs/' + output_video) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <p class="text-xs text-gray-500 text-right">Left: Reference Pro Shot • Right: Your Shot with Real-Time Skeleton &amp; Metrics HUD</p>
+            </div>
+
+            <!-- Performance Scorecard Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-gray-950 p-5 rounded-2xl border border-gray-800">
+                    <span class="text-xs text-gray-400 block mb-1">Overall Form Score</span>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-black text-white">{{ report.overall_score }}%</span>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">{{ report.grade }}</span>
+                    </div>
+                    <div class="w-full bg-gray-800 rounded-full h-1.5 mt-3">
+                        <div class="bg-purple-500 h-1.5 rounded-full" style="width: {{ report.overall_score }}%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-950 p-5 rounded-2xl border border-gray-800">
+                    <span class="text-xs text-gray-400 block mb-1">Lead Elbow Deviation</span>
+                    <div class="text-3xl font-black text-purple-300">~{{ report.lead_elbow_diff }}°</div>
+                    <p class="text-[11px] text-gray-400 mt-2">Avg difference from pro reference</p>
+                </div>
+
+                <div class="bg-gray-950 p-5 rounded-2xl border border-gray-800">
+                    <span class="text-xs text-gray-400 block mb-1">Front Knee Flexion Delta</span>
+                    <div class="text-3xl font-black text-indigo-300">~{{ report.front_knee_diff }}°</div>
+                    <p class="text-[11px] text-gray-400 mt-2">Weight transfer &amp; lunge depth</p>
+                </div>
+
+                <div class="bg-gray-950 p-5 rounded-2xl border border-gray-800">
+                    <span class="text-xs text-gray-400 block mb-1">Frames Analyzed</span>
+                    <div class="text-3xl font-black text-emerald-400">{{ report.total_frames_analyzed }}</div>
+                    <p class="text-[11px] text-gray-400 mt-2">Full stroke trajectory mapped</p>
+                </div>
+            </div>
+
+            <!-- Verdict Banner -->
+            <div class="bg-purple-950/30 border border-purple-500/30 rounded-2xl p-5 flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-purple-600/20 flex items-center justify-center text-purple-400 text-lg flex-shrink-0">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white text-sm mb-1">Coach's Biomechanical Verdict:</h4>
+                    <p class="text-xs text-purple-200 leading-relaxed">{{ report.summary }}</p>
+                </div>
+            </div>
+
+            <!-- Keyframe Snapshots by Phase -->
+            {% if report.keyframes %}
+            <div class="space-y-4 pt-4 border-t border-gray-800">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-camera text-indigo-400"></i> Phase-by-Phase Keyframe Snapshots
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {% for phase, img_name in report.keyframes.items() %}
+                    <div class="bg-gray-950 rounded-xl border border-gray-800 overflow-hidden shadow-md">
+                        <img src="{{ url_for('static', filename='outputs/' + img_name) }}" alt="{{ phase }}" class="w-full aspect-video object-cover">
+                        <div class="p-3">
+                            <span class="text-xs font-bold text-white block">{{ phase }}</span>
+                            <span class="text-[10px] text-purple-400">Biomechanics Locked</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Coaching Breakdown: Strengths, Flaws, and Drills -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-800">
+                <!-- Strengths & Corrections -->
+                <div class="space-y-4">
+                    {% if report.strengths %}
+                    <div class="bg-emerald-950/20 border border-emerald-500/30 rounded-2xl p-5 space-y-2">
+                        <h4 class="font-bold text-emerald-400 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-check-circle"></i> Key Strengths
+                        </h4>
+                        <ul class="space-y-1.5 text-xs text-gray-300">
+                            {% for s in report.strengths %}
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400">•</span>
+                                <span>{{ s }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {% if report.flaws %}
+                    <div class="bg-amber-950/20 border border-amber-500/30 rounded-2xl p-5 space-y-2">
+                        <h4 class="font-bold text-amber-400 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Areas For Improvement
+                        </h4>
+                        <ul class="space-y-1.5 text-xs text-gray-300">
+                            {% for f in report.flaws %}
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-400">•</span>
+                                <span>{{ f }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Recommended Drills -->
+                <div class="bg-gray-950 border border-gray-800 rounded-2xl p-5 space-y-3">
+                    <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-dumbbell text-purple-400"></i> Recommended Practice Drills
+                    </h4>
+                    <div class="space-y-3">
+                        {% for d in report.drills %}
+                        <div class="p-3 rounded-xl bg-gray-900 border border-gray-800">
+                            <div class="font-bold text-xs text-purple-300 mb-1">{{ d.name }}</div>
+                            <div class="text-[11px] text-gray-400 leading-relaxed">{{ d.description }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
+
+    </main>
+
+    <footer class="bg-gray-900 border-t border-gray-800 py-6 text-center text-xs text-gray-500">
+        <p>&copy; 2026 SportioHub • Cricket Pose Biomechanics Engine</p>
+    </footer>
+
+    <script>
+        // Loading animation triggers
+        document.getElementById('sampleForm').addEventListener('submit', () => {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.getElementById('sampleBtn').disabled = true;
+            document.getElementById('sampleBtn').classList.add('opacity-50');
+        });
+
+        document.getElementById('uploadForm').addEventListener('submit', () => {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.getElementById('uploadBtn').disabled = true;
+            document.getElementById('uploadBtn').classList.add('opacity-50');
+        });
+    </script>
 </body>
 </html>

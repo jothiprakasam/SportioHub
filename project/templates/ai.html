@@ -3,156 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pose Analysis Tool</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #0e0e10;
-            color: #fff;
-        }
-
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #1f1f23;
-            padding: 10px 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #9147ff;
-            margin: 0;
-        }
-
-        main {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .form-container {
-            background-color: #1f1f23;
-            padding: 20px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-        }
-
-        .form-container label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-
-        .form-container input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: none;
-            border-radius: 4px;
-        }
-
-        .form-container button {
-            width: 100%;
-            padding: 12px;
-            background-color: #9147ff;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .form-container button:hover {
-            background-color: #772ce8;
-        }
-
-        .results {
-            background-color: #1f1f23;
-            padding: 20px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 600px;
-            margin-top: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-        }
-
-        .results img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #1f1f23;
-            color: #aaa;
-            font-size: 14px;
-        }
-
-        footer a {
-            color: #9147ff;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>Image Pose Analysis - SportioHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-    <header>
-        <h1>Pose Analysis Tool</h1>
-    </header>
-    <main>
-        <div class="form-container">
-            <form action="/ai" method="post" enctype="multipart/form-data">
-                <label for="input_image">Input Image:</label>
-                <input type="file" id="input_image" name="input_image" accept="image/*" required>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans">
 
-                <label for="validation_image">Validation Image:</label>
-                <input type="file" id="validation_image" name="validation_image" accept="image/*" required>
-
-                <button type="submit">Analyze</button>
-            </form>
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-purple-600/30">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-indigo-300 to-white bg-clip-text text-transparent">SportioHub</span>
+                </div>
+            </a>
+            
+            <div class="flex items-center space-x-2 sm:space-x-4 md:space-x-6 text-sm font-medium">
+                <a href="/" class="text-gray-300 hover:text-white transition">Feed</a>
+                <a href="/athletes" class="text-gray-300 hover:text-white transition">Athletes</a>
+                <a href="/events" class="text-gray-300 hover:text-white transition">Events</a>
+                <a href="/analyzer" class="text-gray-300 hover:text-white transition">Video Analyzer</a>
+                <a href="/ai" class="text-purple-400 border-b-2 border-purple-500 pb-1 font-bold">Image AI</a>
+                <a href="/jobs" class="text-gray-300 hover:text-white transition">Careers</a>
+                <a href="/chatbot" class="text-gray-300 hover:text-white transition">AI Coach</a>
+                <a href="/history" class="text-gray-300 hover:text-white transition">History</a>
+            </div>
         </div>
+    </nav>
 
+    <header class="bg-gradient-to-b from-purple-950/40 via-gray-900 to-gray-950 border-b border-gray-800 py-10 px-6 text-center">
+        <div class="max-w-4xl mx-auto space-y-3">
+            <span class="px-3.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold uppercase tracking-wider">
+                Photo Landmark Comparator
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-black text-white">
+                Image Pose <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Alignment Tool</span>
+            </h1>
+            <p class="text-gray-400 text-xs sm:text-sm max-w-xl mx-auto">
+                Compare a single photo snapshot against an orthodox reference image to detect joint deviations and form accuracy.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 py-10 flex-grow space-y-8">
         {% if error %}
-        <div class="results" style="color: red;">
-            <p>{{ error }}</p>
+        <div class="bg-red-500/10 border border-red-500/40 text-red-300 px-5 py-4 rounded-2xl flex items-center gap-3 text-sm">
+            <i class="fa-solid fa-circle-exclamation text-lg"></i>
+            <span>{{ error }}</span>
         </div>
         {% endif %}
 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 1-Click Sample Images Test -->
+            <div class="bg-gradient-to-br from-gray-900 to-purple-950/30 border border-purple-500/30 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold uppercase">Pre-Loaded</span>
+                    <h3 class="text-lg font-bold text-white mt-2 mb-1">Test Sample Images</h3>
+                    <p class="text-xs text-gray-400 mb-4">
+                        Analyzes the repository's sample images: <code class="text-purple-300">upload.jpeg</code> vs <code class="text-purple-300">test.jpeg</code>.
+                    </p>
+                </div>
+                <form action="/ai" method="POST">
+                    <input type="hidden" name="action" value="run_sample">
+                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition text-xs flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i> Run 1-Click Sample Images Test
+                    </button>
+                </form>
+            </div>
+
+            <!-- Custom Images Upload -->
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl">
+                <span class="px-2.5 py-0.5 rounded-full bg-gray-800 text-gray-300 text-xs font-bold uppercase">Custom Upload</span>
+                <h3 class="text-lg font-bold text-white mt-2 mb-3">Upload Custom Images</h3>
+
+                <form action="/ai" method="POST" enctype="multipart/form-data" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Your Pose Image:</label>
+                        <input type="file" name="input_image" accept="image/*" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:bg-purple-600 file:text-white cursor-pointer">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Reference Standard Image:</label>
+                        <input type="file" name="validation_image" accept="image/*" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:bg-gray-800 file:text-gray-300 cursor-pointer">
+                    </div>
+                    <button type="submit" class="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs flex items-center justify-center gap-2 mt-2">
+                        <i class="fa-solid fa-upload"></i> Analyze Uploaded Photos
+                    </button>
+                </form>
+            </div>
+        </div>
+
         {% if similarity_score %}
-        <div class="results">
-            <h2>Results</h2>
-            <p><strong>Similarity Score:</strong> {{ similarity_score }}</p>
-            <h3>Feedback:</h3>
-            <ul>
-                {% for suggestion in feedback %}
-                <li>{{ suggestion }}</li>
-                {% endfor %}
-            </ul>
-            <h3>Output Image:</h3>
-            <img src="{{ output_image }}" alt="Output Image">
+        <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-800">
+                <h3 class="text-xl font-black text-white">Image Pose Analysis Results</h3>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-400">Similarity Score:</span>
+                    <span class="text-2xl font-black text-purple-400">{{ similarity_score }}%</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div>
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Annotated Pose &amp; Deviations</h4>
+                    <div class="rounded-xl overflow-hidden border border-gray-800 bg-black">
+                        <img src="{{ url_for('static', filename='uploads/' + output_image) }}" alt="Annotated Output" class="w-full max-h-96 object-contain">
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Coaching Adjustments</h4>
+                    <ul class="space-y-2">
+                        {% for f in feedback %}
+                        <li class="bg-gray-950 border border-gray-800 p-3 rounded-xl text-xs text-gray-300 flex items-start gap-2.5">
+                            <i class="fa-solid fa-circle-arrow-right text-purple-400 mt-0.5"></i>
+                            <span>{{ f }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
         {% endif %}
     </main>
-    <footer>
-        <p>Powered by <a href="#">AI Pose Analysis</a> | Inspired by Twitch</p>
+
+    <footer class="bg-gray-900 border-t border-gray-800 py-6 text-center text-xs text-gray-500">
+        <p>&copy; 2026 SportioHub • Image Pose Alignment Tool</p>
     </footer>
 </body>
 </html>

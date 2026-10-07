@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athletes Network - SportioHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-purple-600/30">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-indigo-300 to-white bg-clip-text text-transparent">SportioHub</span>
+                </div>
+            </a>
+            
+            <div class="flex items-center space-x-2 sm:space-x-4 md:space-x-6 text-sm font-medium">
+                <a href="/" class="text-gray-300 hover:text-white transition">Feed</a>
+                <a href="/athletes" class="text-purple-400 border-b-2 border-purple-500 pb-1">Athletes</a>
+                <a href="/events" class="text-gray-300 hover:text-white transition">Events</a>
+                <a href="/analyzer" class="text-purple-300 hover:text-white flex items-center gap-1.5 bg-purple-900/40 border border-purple-500/40 px-3 py-1.5 rounded-lg transition hover:bg-purple-800/50">
+                    <i class="fa-solid fa-person-running text-xs"></i> Pose Analyzer
+                </a>
+                <a href="/jobs" class="text-gray-300 hover:text-white transition">Careers</a>
+                <a href="/chatbot" class="text-gray-300 hover:text-white transition">AI Coach</a>
+                <a href="/history" class="text-gray-300 hover:text-white transition">History</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header & Search -->
+    <section class="bg-gray-900 border-b border-gray-800 py-10 px-6">
+        <div class="max-w-7xl mx-auto space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-black text-white flex items-center gap-3">
+                        <i class="fa-solid fa-users text-purple-400"></i> Athletes &amp; Players Network
+                    </h1>
+                    <p class="text-gray-400 text-sm mt-1">
+                        Connect with fellow sports persons, build teams, and train together.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="/events" class="bg-purple-600/20 border border-purple-500/40 text-purple-300 hover:bg-purple-600/30 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-trophy"></i> Join Sports Events
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filters & Search Form -->
+            <form method="GET" action="/athletes" class="flex flex-wrap items-center gap-3 pt-2">
+                <div class="flex-grow max-w-md relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-500 text-xs"></i>
+                    <input type="text" name="q" value="{{ search_query }}" placeholder="Search by athlete name, role, or city..." class="w-full bg-gray-950 border border-gray-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition">
+                </div>
+
+                <!-- Sport Pills -->
+                <div class="flex flex-wrap items-center gap-2">
+                    {% for s in ['All', 'Cricket', 'Football', 'Badminton', 'Tennis', 'Athletics'] %}
+                    <a href="/athletes?sport={{ s }}{% if search_query %}&q={{ search_query }}{% endif %}" class="text-xs px-3 py-2 rounded-xl font-semibold transition {{ 'bg-purple-600 text-white shadow-md shadow-purple-600/30' if current_sport == s else 'bg-gray-950 text-gray-400 hover:text-white border border-gray-800' }}">
+                        {{ s }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Athletes Grid -->
+    <main class="max-w-7xl mx-auto px-6 py-10 flex-grow">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for a in athletes %}
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:border-purple-500/40 transition shadow-lg flex flex-col justify-between">
+                <div>
+                    <div class="flex items-start justify-between mb-4">
+                        <img src="{{ a.avatar }}" alt="{{ a.name }}" class="w-16 h-16 rounded-2xl object-cover border-2 border-purple-500/30 shadow-md">
+                        <span class="text-[11px] px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-bold uppercase tracking-wider">
+                            {{ a.sport }}
+                        </span>
+                    </div>
+
+                    <h3 class="font-bold text-base text-white">{{ a.name }}</h3>
+                    <p class="text-xs text-purple-400 font-medium mb-1">{{ a.role }}</p>
+                    
+                    <div class="flex items-center gap-2 text-[11px] text-gray-400 mb-3">
+                        <span><i class="fa-solid fa-location-dot text-gray-500"></i> {{ a.location }}</span>
+                        <span>•</span>
+                        <span class="text-emerald-400">{{ a.skill_level }}</span>
+                    </div>
+
+                    <p class="text-xs text-gray-300 line-clamp-3 leading-relaxed mb-4">
+                        {{ a.bio }}
+                    </p>
+                </div>
+
+                <div class="pt-3 border-t border-gray-800 flex items-center justify-between gap-2">
+                    <a href="/chatbot" class="text-xs text-gray-400 hover:text-purple-300 p-2 rounded-lg bg-gray-950 border border-gray-800 transition" title="Ask coach about training with this athlete">
+                        <i class="fa-regular fa-message"></i>
+                    </a>
+                    <button onclick="toggleConnect({{ a.id }}, this)" class="flex-grow text-xs font-bold py-2 px-4 rounded-xl transition {{ 'bg-gray-800 text-gray-300 hover:bg-gray-700' if a.is_connected else 'bg-purple-600 hover:bg-purple-500 text-white shadow-md shadow-purple-600/20' }}">
+                        {{ 'Connected' if a.is_connected else 'Connect' }}
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if athletes|length == 0 %}
+        <div class="text-center py-16 text-gray-500">
+            <i class="fa-solid fa-user-slash text-4xl mb-3"></i>
+            <p class="text-base font-semibold">No athletes found matching your search.</p>
+            <a href="/athletes" class="text-xs text-purple-400 hover:underline mt-2 inline-block">Clear filters</a>
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 py-6 text-center text-xs text-gray-500">
+        <p>&copy; 2026 SportioHub • Connecting Sports Persons Worldwide</p>
+    </footer>
+
+    <script>
+        async function toggleConnect(athleteId, btn) {
+            try {
+                const res = await fetch(`/api/athletes/${athleteId}/connect`, { method: 'POST' });
+                const data = await res.json();
+                if (data.is_connected) {
+                    btn.textContent = 'Connected';
+                    btn.className = 'flex-grow text-xs font-bold py-2 px-4 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition';
+                } else {
+                    btn.textContent = 'Connect';
+                    btn.className = 'flex-grow text-xs font-bold py-2 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white shadow-md shadow-purple-600/20 transition';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>
